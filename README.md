@@ -4,7 +4,9 @@
 Fork this repo :) Remember to commit changes after every task (if necessary ofc).
 
 ### Task 2
-Install test server - backend for the application - https://lab.snowdog.pro/open-source/server-for-mobile-recruitment-node.js
+Install test server - backend for the application.
+You can fetch it from [this repo](https://lab.snowdog.pro/open-source/server-for-mobile-recruitment-node.js).
+
 This should end with running server on http://localhost:8080/api/items.json
 
 ### Task 3

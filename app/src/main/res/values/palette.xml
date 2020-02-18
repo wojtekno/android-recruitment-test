@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="light_primary_color">#455a64</color>
+    <color name="light_primary_dark_color">#1c313a</color>
+    <color name="light_accent_color">#FFC107</color>
+    <color name="light_error_color">#FF0000</color>
+    <color name="light_background_color">#ffffff</color>
+    <color name="light_surface_color">#f5f5f5</color>
+    <color name="light_splash_bg">@color/sd_color_white</color>
+
+    <color name="dark_primary_color">#607d8b</color>
+    <color name="dark_primary_dark_color">#34515e</color>
+    <color name="dark_accent_color">#FF9800</color>
+    <color name="dark_error_color">#FF0000</color>
+    <color name="dark_background_color">#424242</color>
+    <color name="dark_surface_color">#1b1b1b</color>
+    <color name="dark_splash_bg">@color/sd_color_black</color>
+
+    <color name="sd_color_white">#F6FAFD</color>
+    <color name="sd_color_black">#181718</color>
+    <color name="sd_color_white_mask">#F4F6FAFD</color>
+    <color name="sd_color_black_mask">#F4181718</color>
+</resources>

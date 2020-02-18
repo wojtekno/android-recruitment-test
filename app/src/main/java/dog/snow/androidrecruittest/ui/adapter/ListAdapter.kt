@@ -28,9 +28,9 @@ class ListAdapter(private val onClick: (item: ListItem, position: Int, view: Vie
         RecyclerView.ViewHolder(itemView) {
         fun bind(item: ListItem) = with(itemView) {
             val ivThumb: ImageView = findViewById(R.id.iv_thumb)
-            val title: TextView = findViewById(R.id.tv_photo_title)
+            val tvTitle: TextView = findViewById(R.id.tv_photo_title)
             val tvAlbumTitle: TextView = findViewById(R.id.tv_album_title)
-            title.text = item.title
+            tvTitle.text = item.title
             tvAlbumTitle.text = item.albumTitle
             //TODO: display item.thumbnailUrl in ivThumb
             setOnClickListener { onClick(item, adapterPosition, this) }

@@ -7,11 +7,13 @@ import dog.snow.androidrecruittest.repository.service.AlbumService
 class MockAlbumApi(
     private val mockModelLoader: MockModelLoader
 ) : AlbumService {
-//    override suspend fun loadAlbums(): Response<List<RawAlbum>> {
-//        val albums = mockModelLoader.loadAlbums(RawAlbum::class.java)
-//    }
+    fun loadAlbums(): List<RawAlbum> {
+        val albums = mockModelLoader.loadAlbums(RawAlbum::class.java)
+        TODO("not implemented")
+    }
 
-//    override suspend fun loadAlbum(albumId: Int): Response<RawAlbum> {
-//        val album = mockModelLoader.loadAlbums(RawAlbum::class.java)?.find { it.id == albumId }
-//    }
+    fun loadAlbum(albumId: Int): RawAlbum {
+        val album = mockModelLoader.loadAlbums(RawAlbum::class.java)?.find { it.id == albumId }
+        TODO("not implemented")
+    }
 }

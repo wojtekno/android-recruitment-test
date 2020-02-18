@@ -7,11 +7,13 @@ import dog.snow.androidrecruittest.repository.service.UserService
 class MockUserApi(
     private val mockModelLoader: MockModelLoader
 ) : UserService {
-//    override suspend fun loadUsers(): Response<List<RawUser>> {
-//        val users = mockModelLoader.loadUsers(RawUser::class.java)
-//    }
+    fun loadUsers(): List<RawUser> {
+        val users = mockModelLoader.loadUsers(RawUser::class.java)
+        TODO("not implemented")
+    }
 
-//    override suspend fun loadUser(photoId: Int): Response<RawUser> {
-//        val user = mockModelLoader.loadUsers(RawUser::class.java)?.find { it.id == photoId }
-//    }
+    fun loadUser(photoId: Int): RawUser {
+        val user = mockModelLoader.loadUsers(RawUser::class.java)?.find { it.id == photoId }
+        TODO("not implemented")
+    }
 }

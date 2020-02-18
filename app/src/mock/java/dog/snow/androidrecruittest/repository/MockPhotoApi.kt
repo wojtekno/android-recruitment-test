@@ -7,11 +7,13 @@ import dog.snow.androidrecruittest.repository.service.PhotoService
 class MockPhotoApi(
     private val mockModelLoader: MockModelLoader
 ) : PhotoService {
-//    override suspend fun loadPhotos(): Response<List<RawPhoto>> {
-//        val photos = mockModelLoader.loadPhotos(RawPhoto::class.java)
-//    }
+    fun loadPhotos(): List<RawPhoto> {
+        val photos = mockModelLoader.loadPhotos(RawPhoto::class.java)
+        TODO("not implemented")
+    }
 
-//    override suspend fun loadPhoto(photoId: Int): Response<RawPhoto> {
-//        val photo = mockModelLoader.loadPhotos(RawPhoto::class.java)?.find { it.id == photoId }
-//    }
+    fun loadPhoto(photoId: Int): RawPhoto {
+        val photo = mockModelLoader.loadPhotos(RawPhoto::class.java)?.find { it.id == photoId }
+        TODO("not implemented")
+    }
 }

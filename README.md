@@ -1,5 +1,7 @@
 # Snowdog Android Recruitment test
 
+### Instruction
+
 1. Fork this repo to your github.
 2. The repository contains app resources: icons, color palette, layouts, fragments and activities. You can use whatever library, design patterns and dependency injection you want. You can add and modify all the things you want, just show us that you know Android :)
 3. Your task is to create an app on top of this project:

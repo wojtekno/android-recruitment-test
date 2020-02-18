@@ -3,7 +3,7 @@
 ### Instruction
 
 1. Fork this repo to your github.
-2. The repository contains app resources.
+2. The repository contains app resources: icons, color palette, layouts, fragments and activities. You can use whatever library, design patterns and dependency injection you want. You can add and modify all the things you want, just show us that you know Android :)
 3. Your task is to create an app on top of this project:
 	1. Your main goal is to provide data
     	* download items from [jsonplaceholder.typicode.com](https://jsonplaceholder.typicode.com):
@@ -11,7 +11,7 @@
           2. Download albums from endpoint [`/albums/{id}`](https://jsonplaceholder.typicode.com/albums/2) for `ids` that are in the downloaded photos (field: `albumId`). You can use `RawAlbum` model.
           3. Download users from endpoint [`/users/{id}`](https://jsonplaceholder.typicode.com/users/3) for `ids` that are in the downloaded albums (field: `userId`). You can use `RawUser` model.
         * Download all the items on `SplashActivity`. The rest of the app should use cached data. If there are some problems with connection, display dialog. You can use `showError()` in `SplashActivity`
-        * Display the list with thumbnails on `RecyclerView` in `ListFragment`. You can use `ListItem` model.
+        * Display the list with thumbnails on `RecyclerView` in `ListFragment`. You can use `ListItem` model and `ListAdapter` but you can change it or use whatever adapter you want.
         * Display details with a full photo in `DetailFragment` which appears after clicking on an item on the list. You can use `Detail` model.
         * jsonplaceholder uses [`placeholder.com`](https://placeholder.com) which returns error 410 on Android devices so you need to change `User-agent` header of request. Set `User-agent` to `Cool app` (or something different than default) for all requests.
         * Use `R.id.search` to filter data by `title` and `albumTitle` in `RecyclerView`.

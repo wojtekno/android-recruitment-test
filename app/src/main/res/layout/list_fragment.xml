@@ -19,9 +19,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:itemCount="10"
+        tools:listitem="@layout/list_item"
         tools:visibility="visible" />
 
     <include layout="@layout/layout_search" />
 
-    <include layout="@layout/layout_empty_view" />
+    <include
+        layout="@layout/layout_empty_view"
+        tools:visibility="gone" />
 </androidx.constraintlayout.widget.ConstraintLayout>

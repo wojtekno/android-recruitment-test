@@ -10,7 +10,7 @@
           1. Download photos from the endpoint [`/photos`](https://jsonplaceholder.typicode.com/photos). There are 5000 items, shrink the list to 100 using request parameter (`_limit=100`). You can use `RawPhoto` model.
           2. Download albums from the endpoint [`/albums/{id}`](https://jsonplaceholder.typicode.com/albums/2) for `ids` that are in the downloaded photos (field: `albumId`). You can use `RawAlbum` model.
           3. Download users from the endpoint [`/users/{id}`](https://jsonplaceholder.typicode.com/users/3) for `ids` that are in the downloaded albums (field: `userId`). You can use `RawUser` model.
-        * Download all the items on `SplashActivity`. The rest of the app should use cached data. If there are some problems with connection, display a dialog. You can use `showError()` in `SplashActivity`
+        * Download all the items on Splash screen. The rest of the app should use cached data. If there are some problems with connection, display a dialog. You can use `showError()` in `SplashActivity`
         * Display a list with thumbnails on `RecyclerView` in `ListFragment`. You can use `ListItem` model and `ListAdapter` but you can change it or use whatever adapter you want.
         * Display details with a full photo in `DetailFragment` which appears after clicking on an item on the list. You can use `Detail` model.
         * Use `R.id.search` to filter data by `title` and `albumTitle` in `RecyclerView`.

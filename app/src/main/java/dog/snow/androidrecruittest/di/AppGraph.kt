@@ -1,20 +1,21 @@
 package dog.snow.androidrecruittest.di
 
 import dog.snow.androidrecruittest.network.HttpClientFactory
-import dog.snow.androidrecruittest.network.JsonPlaceholderApi
+import dog.snow.androidrecruittest.network.PlaceholderApi
+import dog.snow.androidrecruittest.network.RetrofitClientFactory
 import dog.snow.androidrecruittest.repository.PlaceholderRepository
-import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import dog.snow.androidrecruittest.repository.PlaceholderRepositoryImpl
+import dog.snow.androidrecruittest.scheduler.SchedulerProvider
+import dog.snow.androidrecruittest.scheduler.SchedulerProviderImpl
+import dog.snow.androidrecruittest.usecases.GetItemsUseCase
 
 class AppGraph {
     private val okHttpClient = HttpClientFactory().create()
-    private val jsonPlaceholderApi = Retrofit.Builder()
-            .baseUrl(HttpClientFactory.JSON_PLACEHOLDER_API_URL)
-            .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
-            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
-            .build().create(JsonPlaceholderApi::class.java)
+    private val jsonPlaceholderApi = RetrofitClientFactory()
+            .create(okHttpClient)
+            .create(PlaceholderApi::class.java)
+    private val schedulerProvider: SchedulerProvider = SchedulerProviderImpl()
 
-    val placeholderRepository = PlaceholderRepository(jsonPlaceholderApi)
+    private val placeholderRepository: PlaceholderRepository = PlaceholderRepositoryImpl(jsonPlaceholderApi, schedulerProvider)
+    val getItemsUseCase = GetItemsUseCase(placeholderRepository, schedulerProvider)
 }

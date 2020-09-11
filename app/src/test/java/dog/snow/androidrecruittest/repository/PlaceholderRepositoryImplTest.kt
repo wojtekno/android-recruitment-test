@@ -1,88 +1,214 @@
 package dog.snow.androidrecruittest.repository
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.*
 import dog.snow.androidrecruittest.network.PlaceholderApi
-import dog.snow.androidrecruittest.repository.model.RawAlbum
-import dog.snow.androidrecruittest.repository.model.RawPhoto
-import dog.snow.androidrecruittest.scheduler.SchedulerProviderImpl
+import dog.snow.androidrecruittest.scheduler.SchedulerProvider
+import dog.snow.androidrecruittest.testutils.createRawAlbumList
+import dog.snow.androidrecruittest.testutils.createRawPhotoList
+import dog.snow.androidrecruittest.testutils.createRawUserList
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import org.junit.Test
 
 class PlaceholderRepositoryImplTest {
 
     @Test
-    fun `given jsonPlaceholderApi returns error when getPhotos called then photosObs returns that Error`() {
+    fun `given jsonPlaceholderApi returns error when getPhotos called then getRawPhotos() emits that Error`() {
         val throwable = Throwable("error")
         val repo = createMainRepo(placeholderApi = mock {
             on { getPhotos() } doReturn Observable.error(throwable)
         })
 
-//        val testObserver = repo.photosObs.test()
-//        testObserver.assertError(throwable)
-//        testObserver.dispose()
+        repo.getRawPhotos().test()
+                .assertError(throwable)
+                .dispose()
     }
 
     @Test
-    fun `given jsonPlaceholderApi returns empty list of RawPhotos when getPhotos called then photosObs returns empty list `() {
-        val repo = createMainRepo(placeholderApi = mock {
-            on { getPhotos() } doReturn Observable.just(emptyList())
-            on { getAlbums(any()) } doReturn Observable.never()
-        })
-
-//        val testObserver: TestObserver<List<RawPhoto>> = repo.photosObs.test()
-//        testObserver.assertValue(emptyList())
-//        testObserver.dispose()
-    }
-
-    @Test
-    fun `given jsonPlaceholderApi returns list of RawPhotos when getPhotos called  then photosObs returns that list`() {
-        val list = createPhotoList()
+    fun `given jsonPlaceholderApi returns rawPhotoList when getPhotos() called then getRawPhotos() emits that list`() {
+        val list = createRawPhotoList(100)
         val repo = createMainRepo(placeholderApi = mock {
             on { getPhotos() } doReturn Observable.just(list)
-            on { getAlbums(any()) } doReturn Observable.never()
         })
 
-//        val testObserver = repo.photosObs.test()
-//        testObserver.assertValue(list)
-//        testObserver.dispose()
+        repo.getRawPhotos().test()
+                .assertValue(list)
+                .dispose()
     }
 
     @Test
-    fun `given photosObs is being observed and jsonPlaceholderApi returns error when getAlbum called then albumsObs returns error`() {
+    fun `given jsonPlaceholderApi returns error when getPhotos() called then then getAlbums() not called`() {
         val throwable = Throwable("error")
-        val albumIds = listOf<Int>(1)
-        val list = createPhotoList(albums = 1)
-        val repo = createMainRepo(placeholderApi = mock {
-            on { getPhotos() } doReturn Observable.just(list)
-            on { getAlbums(albumIds) } doReturn Observable.error(throwable)
-        })
-
-//        val testObserver = repo.photosObs.test()
-//        val testObserver1 = repo.albumsObs.test()
-//        testObserver1.assertError(throwable)
-//        testObserver.dispose()
-//        testObserver1.dispose()
+        val apiMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.error(throwable)
+        }
+        val repo = createMainRepo(placeholderApi = apiMock)
+        verify(apiMock, times(0)).getAlbums(any())
     }
 
     @Test
-    fun `given photosObs is being observed and jsonPlaceholderApi returns albumList when getAlbum called then albumsObs returns that list`() {
-        val albumIds = listOf<Int>(1, 2, 3)
-        val albums = createAlbumList(3)
-        val list = createPhotoList(albums = 3)
+    fun `given jsonPlaceholderApi returns error when getPhotos() called then getRawAlbums() is empty`() {
+        val throwable = Throwable("error")
         val repo = createMainRepo(placeholderApi = mock {
-            on { getPhotos() } doReturn Observable.just(list)
-            on { getAlbums(albumIds) } doReturn Observable.just(albums)
-//            on { getAlbum(1) } doReturn Observable.just(albums[0])
-//            on { getAlbum(2) } doReturn Observable.just(albums[1])
-//            on { getAlbum(3) } doReturn Observable.just(albums[2])
+            on { getPhotos() } doReturn Observable.error(throwable)
         })
 
-//        val test1 = repo.photosObs.test()
-//        val testObserver = repo.albumsObs.test()
-//        testObserver.assertValue(albums)
-//        testObserver.dispose()
+        repo.getRawAlbums().test()
+                .assertEmpty()
+                .dispose()
+    }
+
+    @Test
+    fun `given returned rawPhotoList has albumIdList when getPhotos() called then getAlbums(albumIdList) called`() {
+        val list = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(list)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+
+        verify(placeholderMock).getAlbums(albumIds)
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns rawAlbumList when getAlbums() called then getRawAlbums emits that list`() {
+        val photoList = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val albumList = createRawAlbumList(15)
+        val repo = createMainRepo(placeholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getAlbums(albumIds) } doReturn Observable.just(albumList)
+        })
+
+        repo.getRawAlbums().test()
+                .assertValue(albumList)
+                .dispose()
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns error when getPhotos() called then getUsers() is not called `() {
+        val throwable = Throwable("error")
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.error(throwable)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        verify(placeholderMock, times(0)).getUsers(any())
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns error when getAlbums() called then getUsers() is not called `() {
+        val throwable = Throwable("error")
+        val photoList = createRawPhotoList(100, 15)
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getAlbums(any()) } doReturn Observable.error(throwable)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        verify(placeholderMock, times(0)).getUsers(any())
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns error when getAlbums() called then getRawUsers() is empty`() {
+        val throwable = Throwable("error")
+        val photoList = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getAlbums(albumIds) } doReturn Observable.error(throwable)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        repo.getRawUsers().test()
+                .assertEmpty()
+                .dispose()
+
+    }
+
+    @Test
+    fun `given returned rawAlbumList has userIdList when getAlbums() called then getUsers(userIdList) is called `() {
+        val photoList = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val albumList = createRawAlbumList(15, 4)
+        val userIds = (1..4).toList()
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getAlbums(albumIds) } doReturn Observable.just(albumList)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        verify(placeholderMock, times(1)).getUsers(userIds)
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns rawUserList when getUsers() called then getRawUsers() emits that list`() {
+        val photoList = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val albumList = createRawAlbumList(15, 4)
+        val userIds = (1..4).toList()
+        val userList = createRawUserList(4)
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getAlbums(albumIds) } doReturn Observable.just(albumList)
+            on { getUsers(userIds) } doReturn Observable.just(userList)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        repo.getRawUsers().test()
+                .assertValue(userList)
+                .dispose()
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns error when getUsers() called then getRawUsers() emits that error`() {
+        val throwable = Throwable("error")
+        val photoList = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val albumList = createRawAlbumList(15, 4)
+        val userIds = (1..4).toList()
+        val placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getAlbums(albumIds) } doReturn Observable.just(albumList)
+            on { getUsers(userIds) } doReturn Observable.error(throwable)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        repo.getRawUsers().test()
+                .assertError(throwable)
+                .dispose()
+    }
+
+    @Test
+    fun `given jsonPlaceholderApi returns rawPhotoList, rawAlbumList, rawUserList when reFetch called then Observables emits updated lists`() {
+        //set1
+        val photoList = createRawPhotoList(100, 15)
+        val albumIds = (1..15).toList()
+        val albumList = createRawAlbumList(15, 4)
+        val userIds = (1..4).toList()
+        val userList = createRawUserList(4)
+        //set2
+        val photoList2 = createRawPhotoList(200, 35)
+        val albumIds2 = (1..35).toList()
+        val albumList2 = createRawAlbumList(35, 25)
+        val userIds2 = (1..25).toList()
+        val userList2 = createRawUserList(25)
+
+        var placeholderMock: PlaceholderApi = mock {
+            on { getPhotos() } doReturn Observable.just(photoList)
+            on { getPhotos(200) } doReturn Observable.just(photoList2)
+            on { getAlbums(albumIds) } doReturn Observable.just(albumList)
+            on { getAlbums(albumIds2) } doReturn Observable.just(albumList2)
+            on { getUsers(userIds) } doReturn Observable.just(userList)
+            on { getUsers(userIds2) } doReturn Observable.just(userList2)
+        }
+        val repo = createMainRepo(placeholderApi = placeholderMock)
+        val rawUsers = repo.getRawUsers().test()
+                .assertValue(userList)
+        val rawAlbums = repo.getRawAlbums().test()
+                .assertValue(albumList)
+        val rawPhotos = repo.getRawPhotos().test()
+                .assertValue(photoList)
+
+        repo.refetchPhotos(200)
+
+        rawPhotos.assertValueAt(1, photoList2)
+        rawUsers.assertValueAt(1, userList2)
+        rawAlbums.assertValueAt(1, albumList2)
     }
 
 
@@ -90,37 +216,13 @@ class PlaceholderRepositoryImplTest {
             placeholderApi: PlaceholderApi = mock {
                 on { getPhotos() } doReturn Observable.never()
                 on { getAlbums(any()) } doReturn Observable.never()
+                on { getUsers(any()) } doReturn Observable.never()
+            },
+            schedulerProvider: SchedulerProvider = mock {
+                on { io() } doReturn Schedulers.trampoline()
+                on { mainThread() } doReturn Schedulers.trampoline()
             })
-            : PlaceholderRepositoryImpl {
-        return PlaceholderRepositoryImpl(placeholderApi, SchedulerProviderImpl())
+            : PlaceholderRepository {
+        return PlaceholderRepositoryImpl(placeholderApi, schedulerProvider)
     }
-
-    private fun createPhotoList(photos: Int = 100, albums: Int = 10): List<RawPhoto> {
-        val list = mutableListOf<RawPhoto>()
-        for (i in 1..photos) {
-            val albumId = when (i % albums) {
-                0 -> albums
-                else -> i % albums
-            }
-            val photo = RawPhoto(i, albumId, "Photo title $i", "urlOfPhoto$i", "thumbNailOfPhoto$i")
-            list.add(photo)
-        }
-        return list
-    }
-
-    private fun createAlbumList(albums: Int = 3, users: Int = 2): List<RawAlbum> {
-        val list = mutableListOf<RawAlbum>()
-        for (i in 1..albums) {
-            val userId = when (i % users) {
-                0 -> users
-                else -> i % users
-            }
-            val album = RawAlbum(i, userId, "album title $i")
-            list.add(album)
-        }
-        return list
-
-    }
-
-
 }

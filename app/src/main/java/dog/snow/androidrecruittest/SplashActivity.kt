@@ -1,6 +1,7 @@
 package dog.snow.androidrecruittest
 
 import android.os.Bundle
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -13,8 +14,9 @@ class SplashActivity : AppCompatActivity(R.layout.splash_activity) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val text: TextView = findViewById(R.id.test_tv)
+        val button: Button = findViewById(R.id.buttonrefetch)
         val useCase = (application as MyApplication).appGraph.getItemsUseCase
-        useCase.listItems
+        useCase.getListItems()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onNext = {
@@ -23,6 +25,11 @@ class SplashActivity : AppCompatActivity(R.layout.splash_activity) {
                         },
                         onError = { d(it) }
                 )
+
+        button.setOnClickListener {
+            d("button clicked")
+            useCase.refetch()
+        }
     }
 
     private fun showError(errorMessage: String?) {

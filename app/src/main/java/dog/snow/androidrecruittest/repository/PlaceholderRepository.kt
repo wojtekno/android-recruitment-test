@@ -6,7 +6,8 @@ import dog.snow.androidrecruittest.repository.model.RawUser
 import io.reactivex.rxjava3.core.Observable
 
 interface PlaceholderRepository {
-    fun getPhotos(quantity: Int = 100): Observable<List<RawPhoto>>
-    fun getAlbums(albumIds: List<Int>): Observable<List<RawAlbum>>
-    fun getUsers(userIds: List<Int>): Observable<List<RawUser>>
+    fun getRawPhotos(): Observable<List<RawPhoto>>
+    fun getRawAlbums(): Observable<List<RawAlbum>>
+    fun getRawUsers(): Observable<List<RawUser>>
+    fun refetchPhotos(quantity: Int = 100)
 }

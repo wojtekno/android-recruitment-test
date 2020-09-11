@@ -7,7 +7,8 @@ import dog.snow.androidrecruittest.repository.PlaceholderRepository
 import dog.snow.androidrecruittest.repository.PlaceholderRepositoryImpl
 import dog.snow.androidrecruittest.scheduler.SchedulerProvider
 import dog.snow.androidrecruittest.scheduler.SchedulerProviderImpl
-import dog.snow.androidrecruittest.usecases.GetItemsUseCase
+import dog.snow.androidrecruittest.usecases.GetListItemsUseCase
+import dog.snow.androidrecruittest.usecases.GetListItemsUseCaseImpl
 
 class AppGraph {
     private val okHttpClient = HttpClientFactory().create()
@@ -17,5 +18,5 @@ class AppGraph {
     private val schedulerProvider: SchedulerProvider = SchedulerProviderImpl()
 
     private val placeholderRepository: PlaceholderRepository = PlaceholderRepositoryImpl(jsonPlaceholderApi, schedulerProvider)
-    val getItemsUseCase = GetItemsUseCase(placeholderRepository, schedulerProvider)
+    val getItemsUseCase: GetListItemsUseCase = GetListItemsUseCaseImpl(placeholderRepository, schedulerProvider)
 }

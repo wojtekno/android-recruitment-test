@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber.d
 
 class SplashActivity : AppCompatActivity(R.layout.splash_activity) {
@@ -17,11 +18,12 @@ class SplashActivity : AppCompatActivity(R.layout.splash_activity) {
         val button: Button = findViewById(R.id.buttonrefetch)
         val useCase = (application as MyApplication).appGraph.getItemsUseCase
         useCase.getListItems()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeBy(
                         onNext = {
                             d("size ${it.size}  :: ${it[0].title}  ")
-                            text.text = "size ${it.size}  :: ${it[0].title}  "
+                            text.text = "size ${it.size}  :: ${it[0].title} :: ${it[90].albumTitle} "
                         },
                         onError = { d(it) }
                 )

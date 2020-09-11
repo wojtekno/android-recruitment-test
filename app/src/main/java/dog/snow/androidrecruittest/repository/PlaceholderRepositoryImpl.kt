@@ -11,9 +11,9 @@ import io.reactivex.rxjava3.subjects.BehaviorSubject
 
 class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, private val schedulerProvider: SchedulerProvider) : PlaceholderRepository {
 
-    private val rawPhotosSubject: BehaviorSubject<List<RawPhoto>> = BehaviorSubject.create()
-    private val rawAlbumSubject: BehaviorSubject<List<RawAlbum>> = BehaviorSubject.create()
-    private val rawUserSubject: BehaviorSubject<List<RawUser>> = BehaviorSubject.create()
+    private var rawPhotosSubject: BehaviorSubject<List<RawPhoto>> = BehaviorSubject.create()
+    private var rawAlbumSubject: BehaviorSubject<List<RawAlbum>> = BehaviorSubject.create()
+    private var rawUserSubject: BehaviorSubject<List<RawUser>> = BehaviorSubject.create()
 
     init {
         placeholderApi.getPhotos()
@@ -24,7 +24,10 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .subscribeOn(schedulerProvider.io())
                 .observeOn(schedulerProvider.mainThread())
                 .subscribeBy(
-                        onError = { rawPhotosSubject.onError(it) },
+                        onError = {
+                            rawPhotosSubject.onError(it)
+//                            rawPhotosSubject = BehaviorSubject.create()
+                        },
                         onNext = { rawPhotosSubject.onNext(it) }
                 )
     }
@@ -40,8 +43,12 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                     it
                 }
                 .subscribeBy(
-                        onError = { rawAlbumSubject.onError(it) },
-                        onNext = { rawAlbumSubject.onNext(it) }
+                        onError = {
+                            rawAlbumSubject.onError(it)
+//                            rawAlbumSubject = BehaviorSubject.create()
+                        },
+                        onNext =
+                        { rawAlbumSubject.onNext(it) }
                 )
     }
 
@@ -52,7 +59,10 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .toList()
                 .flatMapObservable { placeholderApi.getUsers(it) }
                 .subscribeBy(
-                        onError = { rawUserSubject.onError(it) },
+                        onError = {
+                            rawUserSubject.onError(it)
+//                            rawUserSubject = BehaviorSubject.create()
+                        },
                         onNext = { rawUserSubject.onNext(it) }
                 )
     }

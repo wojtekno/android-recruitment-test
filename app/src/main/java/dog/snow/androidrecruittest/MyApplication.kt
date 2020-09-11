@@ -7,9 +7,10 @@ import timber.log.Timber
 
 class MyApplication : Application() {
 
-    var appGraph: AppGraph = AppGraph()
+    lateinit var appGraph: AppGraph
     override fun onCreate() {
         super.onCreate()
         Timber.plant(MDebugTree())
+        appGraph = AppGraph(applicationContext)
     }
 }

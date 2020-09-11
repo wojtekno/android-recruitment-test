@@ -15,7 +15,7 @@ interface PlaceholderApi {
     @GET("albums/{id}")
     fun getAlbum(@Path("id") id: Int): Observable<RawAlbum>
 
-    @GET("albums")
+    @GET("albumsw")
     fun getAlbums(@Query("id") ids: List<Int>): Observable<List<RawAlbum>>
 
     @GET("users")

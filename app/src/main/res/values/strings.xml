@@ -8,4 +8,7 @@
     <string name="cant_download_dialog_message">Can\'t download data because of error:\n%s\nCheck your internet connection.</string>
     <string name="cant_download_dialog_btn_positive">Try again</string>
     <string name="cant_download_dialog_btn_negative">Close</string>
+    <string name="cant_download_album_id_message">Album id: %s - Can\'t download necessary data!</string>
+    <string name="cant_download_user_id_message">User id: %s - Can\'t download necessary data!</string>
+    <string name="cant_download_general_message">Can\'t download necessary data!</string>
 </resources>

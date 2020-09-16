@@ -66,4 +66,5 @@ class GetDetailUseCaseImpl(repository: PlaceholderRepository, resourceProvider: 
 
 
     override fun getItemDetail(listId: Int): Observable<Detail> = detailListSubject.map { it[listId] }
+    override fun getItemDetailById(itemId: Int): Observable<Detail> = detailListSubject.map { list -> list.first { it.photoId == itemId } }
 }

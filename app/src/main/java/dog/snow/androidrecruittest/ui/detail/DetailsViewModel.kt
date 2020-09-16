@@ -14,13 +14,12 @@ class DetailsViewModel(clickedItem: Pair<Int, ListItem>, detailsUseCase: GetDeta
     private val details = MutableLiveData<Detail>(Detail(clickedItem.second.id, clickedItem.second.title, clickedItem.second.albumTitle))
 
     init {
-        detailsUseCase.getItemDetail(clickedItem.first)
+        detailsUseCase.getItemDetailById(clickedItem.first)
                 .subscribeOn(schedulers.io())
                 .observeOn(schedulers.io())
                 .subscribeBy(
                         onError = { d(it.message) },
                         onNext = {
-//                            d("${it.username}")
                             details.postValue(it)
                         }
                 )

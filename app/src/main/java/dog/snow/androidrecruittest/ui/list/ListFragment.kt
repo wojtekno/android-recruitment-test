@@ -1,6 +1,8 @@
 package dog.snow.androidrecruittest.ui.list
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +18,7 @@ import dog.snow.androidrecruittest.databinding.ListFragmentBinding
 import dog.snow.androidrecruittest.ui.MainViewModel
 import dog.snow.androidrecruittest.ui.detail.DetailsFragment
 import dog.snow.androidrecruittest.ui.model.ListItem
+import kotlinx.android.synthetic.main.layout_search.view.*
 
 class ListFragment : Fragment(R.layout.list_fragment), ((ListItem, Int, View) -> Unit) {
     private lateinit var binding: ListFragmentBinding
@@ -33,6 +36,8 @@ class ListFragment : Fragment(R.layout.list_fragment), ((ListItem, Int, View) ->
         binding = ListFragmentBinding.inflate(inflater, container, false)
         binding.lifecycleOwner = viewLifecycleOwner
         adapter = ListAdapter(this)
+        searchOnTextChanged()
+
         return binding.root
     }
 
@@ -45,8 +50,22 @@ class ListFragment : Fragment(R.layout.list_fragment), ((ListItem, Int, View) ->
         }
     }
 
-    override fun invoke(item: ListItem, listId: Int, listItemView: View) {
-        mainVm.setClickedItem(listId, item)
+    private fun searchOnTextChanged() {
+        binding.searchLayout.et_search.addTextChangedListener(object : TextWatcher {
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable) {
+                viewModel.search(s.toString())
+            }
+        })
+    }
+
+    override fun invoke(item: ListItem, photoId: Int, listItemView: View) {
+        mainVm.setClickedItem(photoId, item)
 
         val photoTitleTv: TextView = listItemView.findViewById(R.id.tv_photo_title)
         val photoIv: ImageView = listItemView.findViewById(R.id.iv_thumb)

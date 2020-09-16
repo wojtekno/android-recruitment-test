@@ -25,7 +25,9 @@
             tools:listitem="@layout/list_item"
             tools:visibility="visible" />
 
-        <include layout="@layout/layout_search" />
+        <include
+            android:id="@+id/search_layout"
+            layout="@layout/layout_search" />
 
         <include
             layout="@layout/layout_empty_view"

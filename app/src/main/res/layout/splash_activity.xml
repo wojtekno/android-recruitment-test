@@ -42,25 +42,4 @@
         app:layout_constraintTop_toBottomOf="@id/iv_logo_sd_symbol"
         tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/test_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="static text"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/buttonrefetch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="178dp"
-        android:layout_marginBottom="88dp"
-        android:text="refetch"
-        app:layout_constraintBottom_toTopOf="@+id/iv_logo_sd_text"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/iv_logo_sd_symbol" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

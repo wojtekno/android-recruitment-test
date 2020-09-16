@@ -4,14 +4,16 @@ import dog.snow.androidrecruittest.repository.PlaceholderRepository
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import timber.log.Timber
-import java.util.concurrent.TimeUnit
 
 class FetchDataUseCaseImpl(private val repository: PlaceholderRepository) : FetchDataUseCase {
-    private val sSubject = BehaviorSubject.create<Int>()
+    private var sSubject = BehaviorSubject.create<Int>()
 
     init {
-        repository.getRawPhotos().delay(1000, TimeUnit.MILLISECONDS)
+        subscribeToRepositoryRawLists()
+    }
+
+    private fun subscribeToRepositoryRawLists() {
+        repository.getRawPhotos()
                 .subscribeBy(
                         onError = { sSubject.onError(it) },
                         onNext = {}
@@ -28,13 +30,13 @@ class FetchDataUseCaseImpl(private val repository: PlaceholderRepository) : Fetc
                         onError = { sSubject.onNext(2) },
                         onNext = { sSubject.onNext(3) }
                 )
-
     }
 
     override fun fetchingDataEnded(): Single<Int> = sSubject.firstOrError()
 
     override fun refetch() {
-        Timber.d("refetching")
-        repository.refetchPhotos(200)
+        repository.refetchPhotos()
+        sSubject = BehaviorSubject.create()
+        subscribeToRepositoryRawLists()
     }
 }

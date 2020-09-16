@@ -34,7 +34,10 @@ class ListAdapter(private val onClick: (item: ListItem, position: Int, view: Vie
             tv_album_title.transitionName = "$adapterPosition-${item.albumTitle}"
             tv_photo_title.text = item.title
             tv_album_title.text = item.albumTitle
-            Picasso.get().load(item.thumbnailUrl).into(iv_thumb);
+            Picasso.get().load(item.thumbnailUrl)
+                    .placeholder(R.drawable.ic_placeholder)
+                    .error(R.drawable.ic_placeholder)
+                    .into(iv_thumb);
             setOnClickListener { onClick(item, item.id, this) }
         }
     }

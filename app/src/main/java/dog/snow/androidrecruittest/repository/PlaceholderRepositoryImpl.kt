@@ -16,6 +16,10 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
     private var rawUserSubject: BehaviorSubject<List<RawUser>> = BehaviorSubject.create()
 
     init {
+        fetchCompletePhotoData()
+    }
+
+    private fun fetchCompletePhotoData(quantity: Int = 100) {
         placeholderApi.getPhotos()
                 .retry(3)
                 .map {
@@ -27,7 +31,6 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .subscribeBy(
                         onError = {
                             rawPhotosSubject.onError(it)
-//                            rawPhotosSubject = BehaviorSubject.create()
                         },
                         onNext = { rawPhotosSubject.onNext(it) }
                 )
@@ -47,7 +50,6 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .subscribeBy(
                         onError = {
                             rawAlbumSubject.onError(it)
-//                            rawAlbumSubject = BehaviorSubject.create()
                         },
                         onNext =
                         { rawAlbumSubject.onNext(it) }
@@ -64,7 +66,6 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .subscribeBy(
                         onError = {
                             rawUserSubject.onError(it)
-//                            rawUserSubject = BehaviorSubject.create()
                         },
                         onNext = { rawUserSubject.onNext(it) }
                 )
@@ -79,17 +80,13 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
 
     override fun refetchPhotos(quantity: Int) {
         // TODO: let app using previously stored data if there was any, when refetching emits error
-        placeholderApi.getPhotos(quantity)
+        recreateSubjects()
+        fetchCompletePhotoData(quantity)
+    }
 
-                .map {
-                    fetchAlbumInfo(it)
-                    it
-                }
-                .subscribeOn(schedulerProvider.io())
-                .observeOn(schedulerProvider.mainThread())
-                .subscribeBy(
-                        onError = { rawPhotosSubject.onError(it) },
-                        onNext = { rawPhotosSubject.onNext(it) }
-                )
+    private fun recreateSubjects() {
+        rawPhotosSubject = BehaviorSubject.create()
+        rawAlbumSubject = BehaviorSubject.create()
+        rawUserSubject = BehaviorSubject.create()
     }
 }

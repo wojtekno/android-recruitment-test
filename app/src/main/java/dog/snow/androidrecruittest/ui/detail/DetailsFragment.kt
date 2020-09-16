@@ -48,16 +48,19 @@ class DetailsFragment : Fragment(R.layout.details_fragment) {
         binding.tvAlbumTitle.transitionName = "album"
         detailsVM.getDetails().observe(viewLifecycleOwner, Observer { it ->
             if (it.url.isNotEmpty()) {
-                Picasso.get().load(it.url).into(binding.ivPhoto, object : Callback {
-                    override fun onSuccess() {
-                        startPostponedEnterTransition()
-                    }
+                Picasso.get().load(it.url)
+                        .placeholder(R.drawable.ic_placeholder)
+                        .error(R.drawable.ic_placeholder)
+                        .into(binding.ivPhoto, object : Callback {
+                            override fun onSuccess() {
+                                startPostponedEnterTransition()
+                            }
 
-                    override fun onError(e: Exception?) {
-                        startPostponedEnterTransition()
-                    }
+                            override fun onError(e: Exception?) {
+                                startPostponedEnterTransition()
+                            }
 
-                })
+                        })
             }
         })
     }

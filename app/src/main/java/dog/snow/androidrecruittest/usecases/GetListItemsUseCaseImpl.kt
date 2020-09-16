@@ -7,6 +7,7 @@ import dog.snow.androidrecruittest.repository.model.RawPhoto
 import dog.snow.androidrecruittest.resourceprovider.ResourceProvider
 import dog.snow.androidrecruittest.scheduler.SchedulerProvider
 import dog.snow.androidrecruittest.ui.model.ListItem
+import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.functions.BiFunction
 import io.reactivex.rxjava3.kotlin.subscribeBy
@@ -18,16 +19,21 @@ class GetListItemsUseCaseImpl(private val repository: PlaceholderRepository, pri
     private val listItems: BehaviorSubject<List<ListItem>> = BehaviorSubject.create()
 
     init {
-        val rawAlbums = BehaviorSubject.create<List<RawAlbum>>()
-        repository.getRawAlbums()
-                .subscribeBy(
-                        onNext = {
-                            rawAlbums.onNext(it)
-                        },
-                        onError = { rawAlbums.onNext(emptyList()) }
-                )
+        getDataAndSubscribe()
+    }
 
-        Observable.zip(repository.getRawPhotos(), rawAlbums,
+    private fun getDataAndSubscribe() {
+        val rawAlbums = prepareRawAlbums()
+        zipAndCreateListItems(rawAlbums)
+                .subscribeBy(
+                        onError = { },
+                        onNext = { listItems.onNext(it) }
+                )
+    }
+
+
+    private fun zipAndCreateListItems(rawAlbums: BehaviorSubject<List<RawAlbum>>): @NonNull Observable<List<ListItem>> {
+        return Observable.zip(repository.getRawPhotos(), rawAlbums,
                 BiFunction<List<RawPhoto>, List<RawAlbum>, List<ListItem>> { photos, albums ->
                     val items = mutableListOf<ListItem>()
                     for (photo in photos) {
@@ -39,10 +45,18 @@ class GetListItemsUseCaseImpl(private val repository: PlaceholderRepository, pri
                     }
                     return@BiFunction items
                 })
+    }
+
+    private fun prepareRawAlbums(): BehaviorSubject<List<RawAlbum>> {
+        val rawAlbums = BehaviorSubject.create<List<RawAlbum>>()
+        repository.getRawAlbums()
                 .subscribeBy(
-                        onError = { listItems.onError(it) },
-                        onNext = { listItems.onNext(it) }
+                        onNext = {
+                            rawAlbums.onNext(it)
+                        },
+                        onError = { rawAlbums.onNext(emptyList()) }
                 )
+        return rawAlbums
     }
 
     override fun getListItems(): Observable<List<ListItem>> = listItems

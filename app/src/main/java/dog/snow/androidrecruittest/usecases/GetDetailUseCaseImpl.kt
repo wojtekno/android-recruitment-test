@@ -13,11 +13,30 @@ import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import okhttp3.internal.format
 
-class GetDetailUseCaseImpl(repository: PlaceholderRepository, resourceProvider: ResourceProvider) : GetDetailUseCase {
+class GetDetailUseCaseImpl(private val repository: PlaceholderRepository, private val resourceProvider: ResourceProvider) : GetDetailUseCase {
 
     private val detailListSubject: BehaviorSubject<List<Detail>> = BehaviorSubject.create()
 
     init {
+        prepareDataAndSubscribe()
+    }
+
+    override fun getItemDetail(listId: Int): Observable<Detail> = detailListSubject.map { it[listId] }
+
+    override fun getItemDetailById(itemId: Int): Observable<Detail> = detailListSubject.map { list -> list.first { it.photoId == itemId } }
+
+
+    private fun prepareDataAndSubscribe() {
+        val (rawAlbums, rawUsers) = prepareRawSubjects()
+
+        Observable.zip(repository.getRawPhotos(), rawAlbums, rawUsers, zipPhotosAlbumsAndUsersToDetailList())
+                .subscribeBy(
+                        onError = { detailListSubject.onError(it) },
+                        onNext = { detailListSubject.onNext(it) }
+                )
+    }
+
+    private fun prepareRawSubjects(): Pair<BehaviorSubject<List<RawAlbum>>, BehaviorSubject<List<RawUser>>> {
         val rawAlbums = BehaviorSubject.create<List<RawAlbum>>()
         repository.getRawAlbums()
                 .subscribeBy(
@@ -31,8 +50,12 @@ class GetDetailUseCaseImpl(repository: PlaceholderRepository, resourceProvider: 
                         onError = { rawUsers.onNext(emptyList()) },
                         onNext = { rawUsers.onNext(it) }
                 )
+        return Pair(rawAlbums, rawUsers)
+    }
 
-        Observable.zip(repository.getRawPhotos(), rawAlbums, rawUsers, Function3<List<RawPhoto>, List<RawAlbum>, List<RawUser>, List<Detail>> { photos, albums, users ->
+
+    private fun zipPhotosAlbumsAndUsersToDetailList(): Function3<List<RawPhoto>, List<RawAlbum>, List<RawUser>, List<Detail>> {
+        return Function3<List<RawPhoto>, List<RawAlbum>, List<RawUser>, List<Detail>> { photos, albums, users ->
             val list = mutableListOf<Detail>()
             for (photo in photos) {
                 val album: RawAlbum? = albums.firstOrNull { it.id == photo.albumId }
@@ -57,14 +80,6 @@ class GetDetailUseCaseImpl(repository: PlaceholderRepository, resourceProvider: 
                 list.add(item)
             }
             return@Function3 list
-        })
-                .subscribeBy(
-                        onError = { detailListSubject.onError(it) },
-                        onNext = { detailListSubject.onNext(it) }
-                )
+        }
     }
-
-
-    override fun getItemDetail(listId: Int): Observable<Detail> = detailListSubject.map { it[listId] }
-    override fun getItemDetailById(itemId: Int): Observable<Detail> = detailListSubject.map { list -> list.first { it.photoId == itemId } }
 }

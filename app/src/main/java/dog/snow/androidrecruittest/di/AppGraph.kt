@@ -14,12 +14,8 @@ import dog.snow.androidrecruittest.ui.detail.DetailsVmFactory
 import dog.snow.androidrecruittest.ui.list.ListVmFactory
 import dog.snow.androidrecruittest.ui.splash.SplashVmFactory
 import dog.snow.androidrecruittest.usecases.*
-import timber.log.Timber.d
 
 class AppGraph(context: Context) {
-    init {
-        d("initializing AppGraph")
-    }
 
     //network
     private val okHttpClient = HttpClientFactory().create()
@@ -35,12 +31,13 @@ class AppGraph(context: Context) {
     private val placeholderRepository: PlaceholderRepository = PlaceholderRepositoryImpl(jsonPlaceholderApi, schedulerProvider)
 
     //useCases
-    val getItemsUseCase: GetListItemsUseCase = GetListItemsUseCaseImpl(placeholderRepository, schedulerProvider, resourceProvider)
-    val fetchDataUseCase: FetchDataUseCase = FetchDataUseCaseImpl(placeholderRepository)
-    val getDetailUseCase: GetDetailUseCase = GetDetailUseCaseImpl(placeholderRepository, resourceProvider)
+    private val fetchDataUseCase: FetchDataUseCase = FetchDataUseCaseImpl(placeholderRepository)
+    private val getItemsUseCase: GetListItemsUseCase by lazy { GetListItemsUseCaseImpl(placeholderRepository, schedulerProvider, resourceProvider) }
+    private val getDetailUseCase: GetDetailUseCase by lazy { GetDetailUseCaseImpl(placeholderRepository, resourceProvider) }
 
+    //viewModelFactories
     val splashVmFactory: SplashVmFactory = SplashVmFactory(fetchDataUseCase, schedulerProvider, resourceProvider)
-    val listVMFactory: ListVmFactory = ListVmFactory(getItemsUseCase, schedulerProvider, resourceProvider)
-    val detailsVmFactory: DetailsVmFactory = DetailsVmFactory(getDetailUseCase, schedulerProvider)
+    val listVMFactory: ListVmFactory by lazy { ListVmFactory(getItemsUseCase, schedulerProvider, resourceProvider) }
+    val detailsVmFactory: DetailsVmFactory by lazy { DetailsVmFactory(getDetailUseCase, schedulerProvider) }
 
 }

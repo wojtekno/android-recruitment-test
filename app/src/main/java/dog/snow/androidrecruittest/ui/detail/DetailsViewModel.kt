@@ -7,11 +7,14 @@ import dog.snow.androidrecruittest.scheduler.SchedulerProvider
 import dog.snow.androidrecruittest.ui.model.Detail
 import dog.snow.androidrecruittest.ui.model.ListItem
 import dog.snow.androidrecruittest.usecases.GetDetailUseCase
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import timber.log.Timber.d
 
 class DetailsViewModel(clickedItem: Pair<Int, ListItem>, detailsUseCase: GetDetailUseCase, schedulers: SchedulerProvider) : ViewModel() {
     private val details = MutableLiveData<Detail>(Detail(clickedItem.second.id, clickedItem.second.title, clickedItem.second.albumTitle))
+    private val disposables = CompositeDisposable()
 
     init {
         detailsUseCase.getItemDetailById(clickedItem.first)
@@ -23,7 +26,13 @@ class DetailsViewModel(clickedItem: Pair<Int, ListItem>, detailsUseCase: GetDeta
                             details.postValue(it)
                         }
                 )
+                .addTo(disposables)
     }
 
     fun getDetails(): LiveData<Detail> = details
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.clear()
+    }
 }

@@ -6,13 +6,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context=".MainActivity">
+    tools:context=".ui.MainActivity">
 
     <include layout="@layout/layout_appbar" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/container"
-        android:name="dog.snow.androidrecruittest.ui.ListFragment"
+        android:name="dog.snow.androidrecruittest.ui.list.ListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

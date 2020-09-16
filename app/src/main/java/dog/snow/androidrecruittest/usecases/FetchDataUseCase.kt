@@ -2,6 +2,7 @@ package dog.snow.androidrecruittest.usecases
 
 import io.reactivex.rxjava3.core.Single
 
-interface NotifyDataFetchedUseCase {
+interface FetchDataUseCase {
     fun fetchingDataEnded(): Single<Int>
+    fun refetch()
 }

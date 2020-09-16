@@ -10,12 +10,17 @@ import dog.snow.androidrecruittest.resourceprovider.AndroidResourceProvider
 import dog.snow.androidrecruittest.resourceprovider.ResourceProvider
 import dog.snow.androidrecruittest.scheduler.SchedulerProvider
 import dog.snow.androidrecruittest.scheduler.SchedulerProviderImpl
-import dog.snow.androidrecruittest.usecases.GetListItemsUseCase
-import dog.snow.androidrecruittest.usecases.GetListItemsUseCaseImpl
-import dog.snow.androidrecruittest.usecases.NotifyDataFetchedUseCase
-import dog.snow.androidrecruittest.usecases.NotifyDataFetchedUseCaseImpl
+import dog.snow.androidrecruittest.ui.detail.DetailsVmFactory
+import dog.snow.androidrecruittest.ui.list.ListVmFactory
+import dog.snow.androidrecruittest.ui.splash.SplashVmFactory
+import dog.snow.androidrecruittest.usecases.*
+import timber.log.Timber.d
 
 class AppGraph(context: Context) {
+    init {
+        d("initializing AppGraph")
+    }
+
     //network
     private val okHttpClient = HttpClientFactory().create()
     private val jsonPlaceholderApi = RetrofitClientFactory()
@@ -31,6 +36,11 @@ class AppGraph(context: Context) {
 
     //useCases
     val getItemsUseCase: GetListItemsUseCase = GetListItemsUseCaseImpl(placeholderRepository, schedulerProvider, resourceProvider)
-    val notifyDataFetchedUseCase: NotifyDataFetchedUseCase = NotifyDataFetchedUseCaseImpl(placeholderRepository)
+    val fetchDataUseCase: FetchDataUseCase = FetchDataUseCaseImpl(placeholderRepository)
+    val getDetailUseCase: GetDetailUseCase = GetDetailUseCaseImpl(placeholderRepository, resourceProvider)
+
+    val splashVmFactory: SplashVmFactory = SplashVmFactory(fetchDataUseCase, schedulerProvider, resourceProvider)
+    val listVMFactory: ListVmFactory = ListVmFactory(getItemsUseCase, schedulerProvider, resourceProvider)
+    val detailsVmFactory: DetailsVmFactory = DetailsVmFactory(getDetailUseCase, schedulerProvider)
 
 }

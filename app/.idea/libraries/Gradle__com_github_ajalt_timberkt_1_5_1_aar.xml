@@ -1,9 +1,9 @@
 <component name="libraryTable">
   <library name="Gradle: com.github.ajalt:timberkt:1.5.1@aar">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d0f1f1427f03f3f500d10105e9775d56/jetified-timberkt-1.5.1/AndroidManifest.xml" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d0f1f1427f03f3f500d10105e9775d56/jetified-timberkt-1.5.1/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d0f1f1427f03f3f500d10105e9775d56/jetified-timberkt-1.5.1/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f4fdf63c9c41a791382d2cc1666d206d/jetified-timberkt-1.5.1/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f4fdf63c9c41a791382d2cc1666d206d/jetified-timberkt-1.5.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f4fdf63c9c41a791382d2cc1666d206d/jetified-timberkt-1.5.1/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.ajalt/timberkt/1.5.1/a5f412f9b223ee196d5f6da1afcab50199209705/timberkt-1.5.1-javadoc.jar!/" />

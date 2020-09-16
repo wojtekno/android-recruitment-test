@@ -17,6 +17,7 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
 
     init {
         placeholderApi.getPhotos()
+                .retry(3)
                 .map {
                     fetchAlbumInfo(it)
                     it
@@ -38,6 +39,7 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .map { it.albumId }
                 .toList()
                 .flatMapObservable { placeholderApi.getAlbums(it) }
+                .retry(3)
                 .map {
                     fetchUsersInfo(it)
                     it
@@ -58,6 +60,7 @@ class PlaceholderRepositoryImpl(private val placeholderApi: PlaceholderApi, priv
                 .map { it.userId }
                 .toList()
                 .flatMapObservable { placeholderApi.getUsers(it) }
+                .retry(3)
                 .subscribeBy(
                         onError = {
                             rawUserSubject.onError(it)

@@ -5,9 +5,4 @@ import io.reactivex.rxjava3.core.Observable
 
 interface GetListItemsUseCase {
     fun getListItems(): Observable<List<ListItem>>
-
-    /**
-     * for development testing purposes only
-     */
-    fun refetch()
 }

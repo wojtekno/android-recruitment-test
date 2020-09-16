@@ -12,7 +12,7 @@ interface PlaceholderApi {
     @GET("photos")
     fun getPhotos(@Query("_limit") quantity: Int = 100): Observable<List<RawPhoto>>
 
-    @GET("albums/{id}")
+    @GET("albums1/{id}")
     fun getAlbum(@Path("id") id: Int): Observable<RawAlbum>
 
     @GET("albums")

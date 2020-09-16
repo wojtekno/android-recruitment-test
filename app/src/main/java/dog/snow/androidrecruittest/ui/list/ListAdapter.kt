@@ -1,38 +1,40 @@
-package dog.snow.androidrecruittest.ui.adapter
+package dog.snow.androidrecruittest.ui.list
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import dog.snow.androidrecruittest.R
 import dog.snow.androidrecruittest.ui.model.ListItem
+import kotlinx.android.synthetic.main.list_item.view.*
+import timber.log.Timber.d
 
 class ListAdapter(private val onClick: (item: ListItem, position: Int, view: View) -> Unit) :
-    androidx.recyclerview.widget.ListAdapter<ListItem, ListAdapter.ViewHolder>(DIFF_CALLBACK) {
+        androidx.recyclerview.widget.ListAdapter<ListItem, ListAdapter.ViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView =
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
+                LayoutInflater.from(parent.context).inflate(R.layout.list_item, parent, false)
+        d("onCreateViewHolder")
         return ViewHolder(itemView, onClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position))
+            holder.bind(getItem(position))
 
     class ViewHolder(
-        itemView: View,
-        private val onClick: (item: ListItem, position: Int, view: View) -> Unit
+            itemView: View,
+            private val onClick: (item: ListItem, position: Int, view: View) -> Unit
     ) :
-        RecyclerView.ViewHolder(itemView) {
+            RecyclerView.ViewHolder(itemView) {
         fun bind(item: ListItem) = with(itemView) {
-            val ivThumb: ImageView = findViewById(R.id.iv_thumb)
-            val tvTitle: TextView = findViewById(R.id.tv_photo_title)
-            val tvAlbumTitle: TextView = findViewById(R.id.tv_album_title)
-            tvTitle.text = item.title
-            tvAlbumTitle.text = item.albumTitle
-            //TODO: display item.thumbnailUrl in ivThumb
+            iv_thumb.transitionName = "$adapterPosition-${item.thumbnailUrl}"
+            tv_photo_title.transitionName = "$adapterPosition-${item.title}"
+            tv_album_title.transitionName = "$adapterPosition-${item.albumTitle}"
+            tv_photo_title.text = item.title
+            tv_album_title.text = item.albumTitle
+            Picasso.get().load(item.thumbnailUrl).into(iv_thumb);
             setOnClickListener { onClick(item, adapterPosition, this) }
         }
     }
@@ -40,10 +42,10 @@ class ListAdapter(private val onClick: (item: ListItem, position: Int, view: Vie
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListItem>() {
             override fun areItemsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
-                oldItem.id == newItem.id
+                    oldItem.id == newItem.id
 
             override fun areContentsTheSame(oldItem: ListItem, newItem: ListItem): Boolean =
-                oldItem == newItem
+                    oldItem == newItem
         }
     }
 }

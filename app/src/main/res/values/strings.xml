@@ -11,4 +11,6 @@
     <string name="cant_download_album_id_message">Album id: %s - Can\'t download necessary data!</string>
     <string name="cant_download_user_id_message">User id: %s - Can\'t download necessary data!</string>
     <string name="cant_download_general_message">Can\'t download necessary data!</string>
+    <string name="data_downloaded_partially_message">Could\'t download complete data. Some info may be missing</string>
+    <string name="downloading_successful">success</string>
 </resources>

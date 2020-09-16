@@ -4,9 +4,10 @@ import dog.snow.androidrecruittest.repository.PlaceholderRepository
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class NotifyDataFetchedUseCaseImpl(repository: PlaceholderRepository) : NotifyDataFetchedUseCase {
+class FetchDataUseCaseImpl(private val repository: PlaceholderRepository) : FetchDataUseCase {
     private val sSubject = BehaviorSubject.create<Int>()
 
     init {
@@ -31,4 +32,9 @@ class NotifyDataFetchedUseCaseImpl(repository: PlaceholderRepository) : NotifyDa
     }
 
     override fun fetchingDataEnded(): Single<Int> = sSubject.firstOrError()
+
+    override fun refetch() {
+        Timber.d("refetching")
+        repository.refetchPhotos(200)
+    }
 }

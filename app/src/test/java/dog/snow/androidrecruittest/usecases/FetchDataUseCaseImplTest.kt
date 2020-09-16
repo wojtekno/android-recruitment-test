@@ -9,7 +9,7 @@ import dog.snow.androidrecruittest.testutils.createRawUserList
 import io.reactivex.rxjava3.core.Observable
 import org.junit.Test
 
-class NotifyDataFetchedUseCaseImplTest {
+class FetchDataUseCaseImplTest {
 
     @Test
     fun `given repository hasn't returned anything yet when initializing then fetchingDataEnded doesn't emit `() {
@@ -133,7 +133,7 @@ class NotifyDataFetchedUseCaseImplTest {
                 .dispose()
     }
 
-    private fun createUseCase(repository: PlaceholderRepository): NotifyDataFetchedUseCase {
-        return NotifyDataFetchedUseCaseImpl(repository)
+    private fun createUseCase(repository: PlaceholderRepository): FetchDataUseCase {
+        return FetchDataUseCaseImpl(repository)
     }
 }

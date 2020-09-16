@@ -12,7 +12,6 @@ import io.reactivex.rxjava3.functions.BiFunction
 import io.reactivex.rxjava3.kotlin.subscribeBy
 import io.reactivex.rxjava3.subjects.BehaviorSubject
 import okhttp3.internal.format
-import timber.log.Timber.d
 
 class GetListItemsUseCaseImpl(private val repository: PlaceholderRepository, private val schedulers: SchedulerProvider, private val resourceProvider: ResourceProvider) : GetListItemsUseCase {
 
@@ -44,11 +43,6 @@ class GetListItemsUseCaseImpl(private val repository: PlaceholderRepository, pri
                         onError = { listItems.onError(it) },
                         onNext = { listItems.onNext(it) }
                 )
-    }
-
-    override fun refetch() {
-        d("refetching")
-        repository.refetchPhotos(200)
     }
 
     override fun getListItems(): Observable<List<ListItem>> = listItems
